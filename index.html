@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src ="src/index.js" defer type="module"></script>
+    <link href="./src/assets/styles/index.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <div class="pizza-catalog js-pizza-catalog">
+            <div class="pizza-card">
+                <div class="pizza-card__img">
+                    <img src="./src/assets/img/pepperoni.png" alt="pepperoni">
+                </div>
+                <h5 class="pizza-card__title">Пепперони</h5>
+            </div>
+            <div class="pizza-card">
+                <div class="pizza-card__img">
+                    <img src="./src/assets/img/margarita.png" alt="margarita">
+                </div>
+                <h5 class="pizza-card__title">Маргарита</h5>
+            </div>
+            <div class="pizza-card">
+                <div class="pizza-card__img">
+                    <img src="./src/assets/img/bavarian.png" alt="bavarian">
+                </div>
+                <h5 class="pizza-card__title">Баварская</h5>
+            </div>
+        </div>
+        <div class="pizza-sidebar">
+            <div class="pizza-size">
+                <h3 class="pizza-size__title">Выбрать размер</h3>
+                <div class="b-tabs js-size-checker">
+                    <input class="pizza-size__title-checker" type="radio" name="t" id="tab-1" checked />
+                    <label for="tab-1"><span>Маленькая</span></label>
+
+                    <input class="pizza-size__title-checker" type="radio" name="t" id="tab-2" />
+                    <label for="tab-2"><span>Большая</span></label>
+                </div>
+            </div>
+            <div class="pizza-toppings">
+                <h3 class="pizza-toppings__title">Добавить по вкусу</h3>
+                <div class="pizza-toppings__catalog js-toppings-render">
+                    <div class="pizza-topping-card">
+                        <div class = "pizza-topping-card__img">
+                            <img src="./src/assets/img/cheeseBortik.png" alt="cheeseBortik">
+                        </div>
+                        <span class="pizza-topping-card__title">Сырный бортик</span>
+                        <span class="pizza-topping-card__price">189 Р</span>
+                    </div>
+                    <div class="pizza-topping-card">
+                        <div class = "pizza-topping-card__img">
+                            <img src="./src/assets/img/mozarella.png" alt="mozarella">
+                        </div>
+                        <span class="pizza-topping-card__title">Сливочная моцарелла</span>
+                        <span class="pizza-topping-card__price">99 Р</span>
+                    </div>
+                    <div class="pizza-topping-card">
+                        <div class = "pizza-topping-card__img">
+                            <img src="./src/assets/img/chedderAndParmzn.png" alt="chedderAndParmzn">
+                        </div>
+                        <span class="pizza-topping-card__title">Чеддер и пармезан</span>
+                        <span class="pizza-topping-card__price">99 Р</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pizza-button">
+                <button class="pizza-button__button js-button-render">Добавить в корзину за <br> 0 Р (0 кКалл)</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

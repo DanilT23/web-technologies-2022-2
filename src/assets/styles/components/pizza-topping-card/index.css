@@ -1,0 +1,31 @@
+.pizza-topping-card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+    --webkit-box-shadow: 0 0 40px 2px rgba(34,60,80,0.2);
+    -moz-box-shadow: 0 0 40px 2px rgba(34,60,80,0.2);
+    box-shadow: 0 0 40px 2px rgba(34,60,80,0.2);
+}
+
+.pizza-topping-card__img {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+}
+
+.pizza-topping-card__img > img {
+    width: 100%;
+    height: 100%;
+}
+.pizza-topping-card__title{
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: center;
+}
+
+.pizza-topping-card__price{
+    font-size: 16px;
+    font-weight: 700;
+}
