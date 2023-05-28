@@ -1,3 +1,4 @@
+//TODO добавить error.html
 export class Catalog {
     #el = null
     #paginationEl = null
@@ -8,13 +9,13 @@ export class Catalog {
     #getItems = null
 
     constructor(el, options) {
-        const { renderItem, getItems } = options
-        this.#el = el
-        this.#page = this.getPage()
-        this.#paginationEl = el.querySelector('[data-catalog-pagination]')
-        this.#itemsEl = el.querySelector('[data-catalog-items]')
-        this.#renderItem = renderItem
-        this.#getItems = getItems
+        const { renderItem, getItems } = options;
+        this.#el = el;
+        this.#page = this.getPage();
+        this.#paginationEl = el.querySelector('[data-catalog-pagination]');
+        this.#itemsEl = el.querySelector('[data-catalog-items]');
+        this.#renderItem = renderItem;
+        this.#getItems = getItems;
     }
 
     get limit () {
@@ -25,18 +26,18 @@ export class Catalog {
         return Math.ceil(this.#total / this.limit)
     }
 
-    init () {
-        window.onpopstate = () => {
+    async init () {
+        window.onpopstate = async () => {
             const url = new URL(window.location.href);
             const page = +url.searchParams.get('page');
 
             if (page !== this.#page) {
                 this.setPage(page);
-                this.loadItems()
+                await this.loadItems()
             }
         }
 
-        this.#paginationEl.addEventListener('click', (event) => {
+        this.#paginationEl.addEventListener('click', async (event) => {
             const item = event.target.dataset.catalogPaginationPage ? event.target : event.target.closest('[data-catalog-pagination-page]')
 
             if (!item) {
@@ -47,10 +48,10 @@ export class Catalog {
 
             this.setPage(page);
             this.pushState();
-            this.loadItems()
+            await this.loadItems()
         })
 
-        this.loadItems()
+        await this.loadItems()
     }
 
     getPage () {
@@ -71,45 +72,38 @@ export class Catalog {
         window.history.pushState({}, '', url)
     }
 
-    loadItems () {
+    async loadItems () {
         try {
-            this.#getItems({ limit: this.limit, page: this.#page })
-                .then(({ items, total }) => {
-                    this.#total = total
-                    this.renderItems(items)
-                    this.renderPagination()
-        })
+            let {items, total} = await this.#getItems({limit: this.limit, page: this.#page});
+            this.#total = total;
+            this.renderItems(items);
+            this.renderPagination();
         } catch (error) {
+            window.location.href = 'error.html';
             console.log(error);
         }
     }
 
-    renderItems (items) {
+    renderItems(items) {
         this.#itemsEl.innerHTML = items.map(this.#renderItem).join('')
     }
 
     renderPagination () {
-        let html = ''
+        this.#paginationEl.innerHTML = '';
 
         for (let index = 0; index < this.pageCount; index++) {
             const page = index + 1;
 
-            const classes = ['catalog__pagination-item']
+            const button = document.createElement('button');
+            button.classList.add('catalog__pagination-item');
 
             if (page === this.#page) {
-                classes.push('catalog__pagination-item_active')
+                button.classList.add('catalog__pagination-item_active')
             }
+            button.dataset.catalogPaginationPage = page;
+            button.textContent = page;
+            this.#paginationEl.appendChild(button);
 
-            html += `
-                <button
-                    class="${classes.join(' ')}"
-                    data-catalog-pagination-page="${page}"
-                >
-                    ${page}
-                </button>
-            `
         }
-
-        this.#paginationEl.innerHTML = html
     }
 }
