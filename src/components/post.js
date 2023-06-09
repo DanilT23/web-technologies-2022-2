@@ -50,14 +50,12 @@ export class Post {
     renderComments (comments) {
         for (let i in comments) {
             this.#commentsEl.innerHTML +=
-                `<div id="comment">
-                    {
+                `<div id="comment">                    
                     <p>postId : ${comments[i].postId}</p>
                     <p>id : ${comments[i].id}</p>
                     <p>name : ${comments[i].name}</p>
                     <p>email : ${comments[i].email}</p>
-                    <p>Body : ${comments[i].body}</p>
-                    }
+                    <p>Body : ${comments[i].body}</p>                    
                 </div>`
         }
 
