@@ -1,4 +1,3 @@
-//TODO добавить error.html
 export class Catalog {
     #el = null
     #paginationEl = null
