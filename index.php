@@ -24,7 +24,7 @@ function myFunc($h,$m){
     $s = '';
     if($h == 1 or $h == 21)
         $s = "$h час ";
-    else if($h > 1 and $h < 5)
+    else if(($h > 1 and $h < 5) or ($h >= 22 and $h <= 23))
         $s = "$h часа";
     else if(($h > 4 and $h < 20) or $h == 0)
         $s = "$h часов";
