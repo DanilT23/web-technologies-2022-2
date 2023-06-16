@@ -1,128 +1,92 @@
 <?php
-$html = file_get_contents("./index.html");
-//Задание 1
-$i = 0;
-$result ='';
-do {
-    if($i % 2 == 1)
-        $result = $result . "$i - нечётное число.</br>";
-    elseif($i % 2 == 0 and $i > 0)
-        $result = $result . "$i - чётное число.</br>";
-    else {
-        $result = $result . "$i - это ноль.</br>";
-    }
-    $i++;
-} while($i < 11);
-$html = str_replace('{{ ex1 }}', $result, $html);
-echo $html;
-//Задание 2
-
-$arr = [];
-$arr = [
-    'Московская область' => ['Москва', 'Зеленоград', 'Клин'],
-    'Ленинградская область' => ['Санкт-Петербург', 'Всеволожск', 'Павловск', 'Кронштадт'],
-    'Рязанская область' => ['Рязань', 'Ряжск', 'Шацк', 'Рыбное', 'Скопин', 'Касимов', 'Михайлов']
-];
-
-foreach ($arr as $key => $city) {
-    echo $key . ':</br>';
-    echo implode(', ', $city) . '.<br>';
+//define('DIR_IMG', './gallery_img', false);
+const DIR_IMG = './gallery_img';
+function renderTemplate($page, $arrImg = [], $arrHtml = []) {
+    ob_start();
+    include $page . ".php";
+    return ob_get_clean();
 }
 
-//Задание 3
-echo "</br> <h2>Задание 3:</h2>";
-$arr =[
-    'a' => 'a',
-    'б' => 'b',
-    'в' => 'v',
-    'г' => 'g',
-    'д' => 'd',
-    'е' => 'e',
-    'ё' => 'yo',
-    'ж' => 'zh',
-    'з' => 'z',
-    'и' => 'i',
-    'й' => 'j',
-    'к' => 'k',
-    'л' => 'l',
-    'м' => 'm',
-    'н' => 'n',
-    'о' => 'o',
-    'п' => 'p',
-    'р' => 'r',
-    'с' => 's',
-    'т' => 't',
-    'у' => 'u',
-    'ф' => 'f',
-    'х' => 'x',
-    'ц' => 'cz',
-    'ч' => 'ch',
-    'ш' => 'sh',
-    'щ' => 'shh',
-    'ъ' => '',
-    'ы' => 'y',
-    'ь' => '',
-    'э' => 'e',
-    'ю' => 'yu',
-    'я' => 'ya'
-];
-$text = 'какой то текст';
-$new_text = convertToTranslit($text,$arr);
-echo "$new_text<br>";
-
-function convertToTranslit($s,$arr){
-    return strtr(mb_strtolower($s), $arr);
+function logging() {
+    $day = date('G:i:s d:m:Y');
 }
-//Задание 4
-echo "</br> <h2>Задание 4:</h2>";
 
-$menu = [
-    'Страница',
-    'Меню' => [
-        'Подменю 1',
-        'Подменю 2'
-    ],
-    'Меню 2' => [
-    'Подменю 1',
-    'Подменю 2'
-],
-];
-
-echo '<ul>';
-foreach ($menu as $key => $value) {
-    if (is_array($value)) {
-        echo '<li> <a href="index.html"> ' . $key . ' </a> <ul>';
-        foreach ($value as $new_value) {
-            echo '<li> <a href="index.html"> ' . $new_value . ' </a> </li>';
-        }
-        echo '</ul>' . '</li>';
-    }
-    else {
-        echo '<li> <a href="index.html">' . $value . '</a></li>';
-    }
-}
-echo '</ul>';
-
-//Задание 5
-echo "</br> <h2>Задание 5:</h2>";
-
-//Задание 6
-echo "</br> <h2>Задание 6:</h2>";
-
-$arr = [];
-$arr = [
-    'Московская область' => ['Москва', 'Зеленоград', 'Клин'],
-    'Ленинградская область' => ['Санкт-Петербург', 'Всеволожск', 'Павловск', 'Кронштадт'],
-    'Рязанская область' => ['Рязань', 'Ряжск' , 'Шацк', 'Рыбное', 'Скопин', 'Касимов', 'Михайлов']
-];
-foreach ($arr as $key => $value) {
-    if (is_array($value)) {
-        foreach ($value as $new_key => $new_value) {
-            if (mb_substr($new_value, 0,1) == 'К') {
-                echo $new_value.' ';
+function renderArr() {
+    $arr = [];
+    $scanDir = scandir(DIR_IMG);
+    for ($i = 0; $i < count($scanDir); $i++) {
+        if (strlen($scanDir[$i]) > 2) {
+            $scanDirImg = scanDir(DIR_IMG . "/" . $scanDir[$i]);
+            for ($j = 0; $j < count($scanDirImg); $j++) {
+                if (strlen($scanDirImg[$j]) > 2) {
+                    $arr[$i - 2][$j - 2] = DIR_IMG . "/" . $scanDir[$i] . "/" . $scanDirImg[$j];
+                }
             }
         }
     }
-}
-echo '<br>';
 
+    return $arr;
+}
+
+$arrImg = renderArr();
+
+$gallery = renderTemplate('gallery', $arrImg);
+
+$arrHtml = array($gallery);
+
+echo renderTemplate('main', $arrImg, $arrHtml);
+
+
+logging();
+
+
+$messages = [
+    'ok'=>'Файл загружен',
+    'error0' => 'Ошибка загрузки, выберете файл',
+    'error1' => 'Неподходящий размер файла',
+    'error2' => 'Неподходящий формат, только jpg'
+];
+
+if(!empty($_FILES)){
+    $path = "gallery_img/small/".$_FILES["myfile"]["name"];
+    if($_FILES["myFile"]["size"] > 1024 * 1024){
+        $message = 'error1';
+    }
+    elseif(mime_content_type($_FILES['myfile']['tmp_name']) != 'image/jpeg'){
+        $message = 'error2';
+    }
+    elseif(move_uploaded_file($_FILES["myfile"]["tmp_name"],$path)){
+        $message = 'ok';
+    }
+    else{
+        $message ='error0';
+    }
+    header("Location: index.php?status=$message");
+
+}
+
+
+$message = $messages[$_GET['status']]
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css"/>
+    <title>Document</title>
+</head>
+
+<body>
+    <h2 class="message"><?=$message?></h2><br>
+    <div class="add">
+        <form method="post" enctype="multipart/form-data">
+            <input id="file" type="file" name="myfile">
+            <input id="submit" type="submit" value="Загрузить">
+        </form>
+    </div>
+</body>
+
+</html>
